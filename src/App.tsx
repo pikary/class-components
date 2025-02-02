@@ -11,7 +11,7 @@ interface AppState {
   test: string | null;
 }
 
-class App extends Component<_, AppState> {
+class App extends Component<unknown, AppState> {
   constructor(props: unknown) {
     super(props);
     this.state = {
@@ -47,7 +47,10 @@ class App extends Component<_, AppState> {
   handleError = () => {
     this.setState({ test: null });
   };
-  shouldComponentUpdate(nextProps: _, nextState: Readonly<AppState>): boolean {
+  shouldComponentUpdate(
+    nextProps: unknown,
+    nextState: Readonly<AppState>
+  ): boolean {
     if (nextState.test === null) {
       throw new Error('TESTING ERROR BOUNDARY');
       return false;
