@@ -1,10 +1,14 @@
 import { Component, ReactNode } from 'react';
 import './styles.scss';
 
-class Spinner extends Component {
+interface SpinnerProps {
+  className?: string;
+}
+
+class Spinner extends Component<SpinnerProps> {
   render(): ReactNode {
     return (
-      <div className="lds-ring">
+      <div className={`lds-ring ${this.props.className}`}>
         <div></div>
         <div></div>
         <div></div>

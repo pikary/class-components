@@ -3,10 +3,13 @@ import SearchComponent from './components/Search';
 import { getCharacters } from './api/baseApi';
 import { Character } from './api/types';
 import Spinner from './components/Spinner';
+import CharacterTable from './components/Result';
+import ErrorBoundary from './ErrorBoundary';
 interface AppProps {}
 interface AppState {
   searchResult: Array<Character>;
   isLoading: boolean;
+  test: any | null;
 }
 
 class App extends Component<_, AppState> {
@@ -15,6 +18,7 @@ class App extends Component<_, AppState> {
     this.state = {
       searchResult: [],
       isLoading: false,
+      test: {},
     };
   }
 
@@ -40,6 +44,18 @@ class App extends Component<_, AppState> {
     }
   };
 
+  handleError = () => {
+    this.setState({ test: null });
+  };
+  shouldComponentUpdate(nextProps: _, nextState: Readonly<AppState>): boolean {
+    if (nextState.test === null) {
+      throw new Error('');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   render() {
     const { searchResult, isLoading } = this.state;
 
@@ -48,18 +64,17 @@ class App extends Component<_, AppState> {
         <header>
           <SearchComponent handleSearch={this.handleSearch} />
         </header>
+        <div className="result-container">
+          {isLoading ? (
+            <Spinner className="result-container__spinner" />
+          ) : (
+            <CharacterTable characters={searchResult}></CharacterTable>
+          )}
+        </div>
 
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <div>
-            {searchResult.length > 0 ? (
-              searchResult.map((item) => <p key={item.url}>{item.name}</p>)
-            ) : (
-              <p>No results found.</p>
-            )}
-          </div>
-        )}
+        <button className="error-btn" onClick={this.handleError}>
+          Show error
+        </button>
       </main>
     );
   }

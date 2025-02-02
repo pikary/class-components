@@ -7,6 +7,7 @@ interface SearchComponentProps {
 interface SearchComponentState {
   query: string;
 }
+
 class SearchComponent extends Component<
   SearchComponentProps,
   SearchComponentState
