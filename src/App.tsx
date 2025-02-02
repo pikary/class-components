@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SearchComponent from './components/Search';
 import { getCharacters } from './api/baseApi';
 import { Character } from './api/types';
-
+import Spinner from './components/Spinner';
 interface AppProps {}
 interface AppState {
   searchResult: Array<Character>;
@@ -48,7 +48,7 @@ class App extends Component<_, AppState> {
         </header>
 
         {isLoading ? (
-          <Loader /> // Show loader when loading
+          <Spinner />
         ) : (
           <div>
             {searchResult.length > 0 ? (
