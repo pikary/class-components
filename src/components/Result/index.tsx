@@ -7,9 +7,6 @@ interface CharacterTableProps {
 }
 
 class CharacterTable extends Component<CharacterTableProps> {
-  componentDidMount(): void {
-    console.log(this.props.characters.length);
-  }
   render(): ReactNode {
     const { characters } = this.props;
 
@@ -28,7 +25,7 @@ class CharacterTable extends Component<CharacterTableProps> {
         </thead>
         <tbody>
           {characters.map((character, ind) => (
-            <tr key={character.url}>
+            <tr key={character.url} className="character-table__child">
               <td>{++ind}</td>
               <td>{character.name}</td>
               <td>{character.height}</td>

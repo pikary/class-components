@@ -13,13 +13,12 @@ export const getCharacters = async (
     const response = await fetch(`${BASE_URL}${url}/?search=${query}`);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      throw new Error(`${response.status}:${response.text}`);
     }
 
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error('Error fetching characters:', error);
-    return null;
+    throw new Error('Error fetching characters: ' + (error as Error).message);
   }
 };

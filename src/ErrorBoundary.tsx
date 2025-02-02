@@ -1,5 +1,4 @@
-// ErrorBoundary.tsx
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -21,7 +20,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Caught by ErrorBoundary:', error, errorInfo); // Logs error
+    console.error('Caught by ErrorBoundary:', error, errorInfo);
   }
 
   render() {
