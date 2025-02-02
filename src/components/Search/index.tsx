@@ -1,7 +1,15 @@
 import { Component, ReactNode } from 'react';
 import './styles.scss';
 
-class SearchComponent extends Component {
+interface SearchComponentProps {
+  handleSearch: () => void;
+  query: string;
+}
+class SearchComponent extends Component<SearchComponentProps> {
+  constructor(props: SearchComponentProps) {
+    super(props);
+  }
+
   render(): ReactNode {
     return (
       <form className="searh">

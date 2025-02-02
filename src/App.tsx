@@ -10,7 +10,8 @@ class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
-      count: 0,
+      searchQuery: localStorage.getItem('search_query') || '',
+      searchResult: [],
     };
   }
 
