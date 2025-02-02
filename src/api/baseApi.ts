@@ -8,7 +8,7 @@ interface ReturnType<T> {
 export const getCharacters = async (
   url: string,
   query: string
-): Promise<ReturnType<Character> | null> => {
+): Promise<ReturnType<Character[]> | null> => {
   try {
     const response = await fetch(`${BASE_URL}${url}?search=${query}`);
 

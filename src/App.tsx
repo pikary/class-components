@@ -1,33 +1,55 @@
 import React, { Component } from 'react';
 import SearchComponent from './components/Search';
+import { getCharacters } from './api/baseApi';
+import { Character } from './api/types';
 
 interface AppProps {}
 interface AppState {
-  count: number;
+  searchResult: Array<Character>;
+  isLoading: boolean;
 }
 
-class App extends Component<AppProps, AppState> {
+class App extends Component<_, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
-      searchQuery: localStorage.getItem('search_query') || '',
       searchResult: [],
+      isLoading: false,
     };
   }
 
-  handleIncrement = () => {
-    this.setState((prevState) => ({
-      count: prevState.count + 1,
-    }));
+  toggleLoading = (value: boolean) => {
+    this.setState({ isLoading: value });
+  };
+
+  handleSearch = async (query: string) => {
+    try {
+      this.toggleLoading(true);
+      const result = await getCharacters('people', query);
+      if (result) {
+        this.setState({
+          searchResult: result.results || [],
+        });
+      }
+    } catch (e) {
+      throw new Error(e);
+    } finally {
+      this.toggleLoading(false);
+    }
   };
 
   render() {
     return (
       <main>
         <header>
-          <SearchComponent></SearchComponent>
+          <SearchComponent handleSearch={this.handleSearch} />
         </header>
-        <div></div>
+        <div>
+          {this.state.searchResult &&
+            this.state.searchResult.map((item) => (
+              <p key={item.url}>{item.name}</p>
+            ))}
+        </div>
       </main>
     );
   }
