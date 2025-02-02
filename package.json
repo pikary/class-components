@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "format:fix": "prettier --write .",
     "prepare": "husky install",
-     "deploy": "gh-pages -d dist"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist -b class-components"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
