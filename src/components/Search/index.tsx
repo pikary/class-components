@@ -38,6 +38,14 @@ class SearchComponent extends Component<
     e.preventDefault();
     this.props.handleSearch(this.state.query);
   };
+
+  componentDidMount(): void {
+    const savedQuery = localStorage.getItem('search_query') || '';
+
+    this.setState({ query: savedQuery }, () => {
+      this.props.handleSearch(savedQuery);
+    });
+  }
   render(): ReactNode {
     return (
       <form className="searh" onSubmit={this.handleSubmit}>
@@ -46,6 +54,7 @@ class SearchComponent extends Component<
           type="text"
           placeholder="type to search"
           onChange={this.onType}
+          value={this.state.query}
         ></input>
         <button type="submit" className="search__button">
           Search

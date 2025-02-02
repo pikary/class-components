@@ -30,6 +30,8 @@ class App extends Component<_, AppState> {
         this.setState({
           searchResult: result.results || [],
         });
+        //save query to localstorage
+        localStorage.setItem('search_query', query);
       }
     } catch (e) {
       throw new Error(e);
