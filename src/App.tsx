@@ -39,17 +39,25 @@ class App extends Component<_, AppState> {
   };
 
   render() {
+    const { searchResult, isLoading } = this.state;
+
     return (
       <main>
         <header>
           <SearchComponent handleSearch={this.handleSearch} />
         </header>
-        <div>
-          {this.state.searchResult &&
-            this.state.searchResult.map((item) => (
-              <p key={item.url}>{item.name}</p>
-            ))}
-        </div>
+
+        {isLoading ? (
+          <Loader /> // Show loader when loading
+        ) : (
+          <div>
+            {searchResult.length > 0 ? (
+              searchResult.map((item) => <p key={item.url}>{item.name}</p>)
+            ) : (
+              <p>No results found.</p>
+            )}
+          </div>
+        )}
       </main>
     );
   }
