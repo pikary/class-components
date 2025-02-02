@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import SearchComponent from './components/Search';
 
 interface AppProps {}
 interface AppState {
@@ -21,7 +21,14 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    return <></>;
+    return (
+      <main>
+        <header>
+          <SearchComponent></SearchComponent>
+        </header>
+        <div></div>
+      </main>
+    );
   }
 }
 
