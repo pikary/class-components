@@ -1,51 +1,83 @@
-import React, { Component } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Component } from 'react';
+import SearchComponent from './components/Search';
+import { getCharacters } from './api/baseApi';
+import { Character } from './api/types';
+import Spinner from './components/Spinner';
+import CharacterTable from './components/Result';
 
-interface AppProps {}
 interface AppState {
-  count: number;
+  searchResult: Array<Character>;
+  isLoading: boolean;
+  test: string | null;
 }
 
-class App extends Component<AppProps, AppState> {
-  constructor(props: AppProps) {
+class App extends Component<unknown, AppState> {
+  constructor(props: unknown) {
     super(props);
     this.state = {
-      count: 0,
+      searchResult: [],
+      isLoading: false,
+      test: '',
     };
   }
 
-  handleIncrement = () => {
-    this.setState((prevState) => ({
-      count: prevState.count + 1,
-    }));
+  toggleLoading = (value: boolean) => {
+    this.setState({ isLoading: value });
   };
 
+  handleSearch = async (query: string) => {
+    try {
+      this.toggleLoading(true);
+      const result = await getCharacters('people', query);
+      if (result) {
+        this.setState({
+          searchResult: result.results || [],
+        });
+        //save query to localstorage
+        localStorage.setItem('search_query', query);
+      }
+    } catch (e) {
+      alert(e);
+      console.log(e);
+    } finally {
+      this.toggleLoading(false);
+    }
+  };
+
+  handleError = () => {
+    this.setState({ test: null });
+  };
+  shouldComponentUpdate(
+    _nextProps: unknown,
+    nextState: Readonly<AppState>
+  ): boolean {
+    if (nextState.test === null) {
+      throw new Error('TESTING ERROR BOUNDARY');
+    } else {
+      return true;
+    }
+  }
+
   render() {
+    const { searchResult, isLoading } = this.state;
+
     return (
-      <>
-        <div>
-          <a href="https://vite.dev" target="_blank" rel="noreferrer">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank" rel="noreferrer">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
+      <main>
+        <header>
+          <SearchComponent handleSearch={this.handleSearch} />
+        </header>
+        <div className="result-container">
+          {isLoading ? (
+            <Spinner className="result-container__spinner" />
+          ) : (
+            <CharacterTable characters={searchResult}></CharacterTable>
+          )}
         </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={this.handleIncrement}>
-            count is {this.state.count}
-          </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </>
+
+        <button className="error-btn" onClick={this.handleError}>
+          Show error
+        </button>
+      </main>
     );
   }
 }

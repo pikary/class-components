@@ -1,0 +1,98 @@
+@import './normalize.css';
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 13px;
+  }
+}
+//70px - navbar height
+
+:root {
+  --font-size-xl: 2rem; /* 32px */
+  --font-size-l: 1.5rem; /* 24px */
+  --font-size-m: 1.125rem; /* 18px */
+  --font-size-sm: 0.875rem; /* 14px */
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: var(--font-size-m);
+  background-size: cover;
+}
+
+ul {
+  list-style-type: none;
+}
+
+main {
+  max-width: 1240px;
+  margin: 200px auto;
+  padding: 0 40px;
+  border: 1px solid;
+  .result-container {
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    min-height: 500px;
+    &__spinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .error-boundary {
+    background-color: #ffe6e6;
+    border: 1px solid #ff4d4d;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #cc0000;
+    margin: 20px;
+  }
+  .error-btn {
+    padding: 10px 20px;
+    background-color: rgba(255, 0, 0, 0.8); // Red with 80% opacity
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: var(--font-size-m);
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba(255, 0, 0, 0.9); // Less transparent on hover
+    }
+
+    &:active {
+      background-color: rgba(255, 0, 0, 1); // Fully opaque when active
+    }
+  }
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+}
+
+.error-fallback{
+  padding: 20px;
+  background-color: #ffe6e6;
+  border: 1px solid #ff4d4d;
+  border-radius: 8px;
+  color: #b30000; 
+}
