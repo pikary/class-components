@@ -48,12 +48,11 @@ class App extends Component<unknown, AppState> {
     this.setState({ test: null });
   };
   shouldComponentUpdate(
-    nextProps: unknown,
+    _nextProps: unknown,
     nextState: Readonly<AppState>
   ): boolean {
     if (nextState.test === null) {
       throw new Error('TESTING ERROR BOUNDARY');
-      return false;
     } else {
       return true;
     }
