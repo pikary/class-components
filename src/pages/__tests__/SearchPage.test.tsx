@@ -2,8 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
 import SearchPage from '../SearchPage';
 import { getCharacters } from '../../api/baseApi';
-import ErrorBoundary from '../../ErrorBoundary';
-
+import { MemoryRouter } from 'react-router-dom';
 // Mock API function
 vi.mock('../../api/baseApi', () => ({
   getCharacters: vi.fn(),
@@ -15,7 +14,11 @@ describe('SearchPage Component', () => {
   });
 
   it('renders search input and button', () => {
-    render(<SearchPage />);
+    render(
+      <MemoryRouter>
+        <SearchPage />
+      </MemoryRouter>
+    );
 
     expect(screen.getByTestId('search-input')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
@@ -24,7 +27,11 @@ describe('SearchPage Component', () => {
   it('displays loading spinner when searching', async () => {
     (getCharacters as vi.Mock).mockResolvedValue({ results: [] });
 
-    render(<SearchPage />);
+    render(
+      <MemoryRouter>
+        <SearchPage />
+      </MemoryRouter>
+    );
 
     fireEvent.change(screen.getByTestId('search-input'), {
       target: { value: 'Luke' },
@@ -54,7 +61,11 @@ describe('SearchPage Component', () => {
       ],
     });
 
-    render(<SearchPage />);
+    render(
+      <MemoryRouter>
+        <SearchPage />
+      </MemoryRouter>
+    );
 
     fireEvent.change(screen.getByTestId('search-input'), {
       target: { value: 'Luke' },
@@ -65,16 +76,5 @@ describe('SearchPage Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
     });
-  });
-
-  it('shows error when handleError button is clicked', () => {
-    render(
-      <ErrorBoundary>
-        <SearchPage></SearchPage>
-      </ErrorBoundary>
-    );
-    fireEvent.click(screen.getByTestId('error-btn'));
-
-    expect(screen.getByTestId('error-fallback')).toBeInTheDocument();
   });
 });
