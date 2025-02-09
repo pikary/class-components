@@ -26,6 +26,7 @@ const SearchPage = () => {
   const handleSearch = useCallback(async () => {
     try {
       toggleLoading(true);
+      navigate('/search/1', { replace: true });
       const result = await getCharacters('people', query, currentPage);
       if (result) {
         setSearchResult(result.results || []);
