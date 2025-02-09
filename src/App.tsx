@@ -1,85 +1,63 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import SearchComponent from './components/Search';
 import { getCharacters } from './api/baseApi';
 import { Character } from './api/types';
 import Spinner from './components/Spinner';
 import CharacterTable from './components/Result';
 
-interface AppState {
-  searchResult: Array<Character>;
-  isLoading: boolean;
-  test: string | null;
-}
+const App = () => {
+  const [searchResult, setSearchResult] = useState<Array<Character>>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [test, setTest] = useState<string | null>('');
 
-class App extends Component<unknown, AppState> {
-  constructor(props: unknown) {
-    super(props);
-    this.state = {
-      searchResult: [],
-      isLoading: false,
-      test: '',
-    };
-  }
-
-  toggleLoading = (value: boolean) => {
-    this.setState({ isLoading: value });
+  const toggleLoading = (value: boolean) => {
+    setIsLoading(value);
   };
 
-  handleSearch = async (query: string) => {
+  const handleSearch = async (query: string) => {
     try {
-      this.toggleLoading(true);
+      toggleLoading(true);
       const result = await getCharacters('people', query);
       if (result) {
-        this.setState({
-          searchResult: result.results || [],
-        });
-        //save query to localstorage
+        setSearchResult(result.results || []);
         localStorage.setItem('search_query', query);
       }
     } catch (e) {
       alert(e);
       console.log(e);
     } finally {
-      this.toggleLoading(false);
+      toggleLoading(false);
     }
   };
 
-  handleError = () => {
-    this.setState({ test: null });
+  const handleError = () => {
+    setTest(null);
   };
-  shouldComponentUpdate(
-    _nextProps: unknown,
-    nextState: Readonly<AppState>
-  ): boolean {
-    if (nextState.test === null) {
+
+  useEffect(() => {
+    if (test === null) {
       throw new Error('TESTING ERROR BOUNDARY');
-    } else {
-      return true;
     }
-  }
+  }, [test]);
 
-  render() {
-    const { searchResult, isLoading } = this.state;
+  return (
+    <main>
+      <header>
+        <SearchComponent handleSearch={handleSearch} />
+      </header>
+      <div className="result-container">
+        {isLoading ? (
+          <Spinner className="result-container__spinner" />
+        ) : (
+          <CharacterTable characters={searchResult} />
+        )}
+      </div>
 
-    return (
-      <main>
-        <header>
-          <SearchComponent handleSearch={this.handleSearch} />
-        </header>
-        <div className="result-container">
-          {isLoading ? (
-            <Spinner className="result-container__spinner" />
-          ) : (
-            <CharacterTable characters={searchResult}></CharacterTable>
-          )}
-        </div>
-
-        <button className="error-btn" onClick={this.handleError}>
-          Show error
-        </button>
-      </main>
-    );
-  }
-}
+      <button className="error-btn" onClick={handleError}>
+        Show error
+      </button>
+    </main>
+  );
+};
 
 export default App;
