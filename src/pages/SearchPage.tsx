@@ -74,6 +74,7 @@ const SearchPage = () => {
       </header>
       <div className="search-page__pagination-controls">
         <button
+          data-testid="pagi-prev-btn"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -81,6 +82,7 @@ const SearchPage = () => {
         </button>
         <h5>Page: {currentPage}</h5>
         <button
+          data-testid="pagi-next-btn"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
