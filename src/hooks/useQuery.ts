@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 interface UseQueryInterface {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -6,14 +6,11 @@ interface UseQueryInterface {
 }
 
 const useQuery = (key: string): UseQueryInterface => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string>(localStorage.getItem(key) || '');
 
-  useEffect(() => {
-    const savedQuery = localStorage.getItem(key) || '';
-    setQuery(savedQuery);
-  }, [key]);
-
+  // setQuery is called after search request is done
   const handleQuerySave = () => {
+    console.log({ LOX: query });
     localStorage.setItem(key, query);
   };
 

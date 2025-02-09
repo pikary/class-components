@@ -22,12 +22,12 @@ const App = () => {
       const result = await getCharacters('people', query);
       if (result) {
         setSearchResult(result.results || []);
+        console.log({ savingQuery: query });
+
         handleQuerySave();
       }
     } catch (e) {
       console.log(e);
-
-      alert(e);
     } finally {
       toggleLoading(false);
     }
