@@ -6,7 +6,7 @@ interface SpinnerProps {
 
 const Spinner = ({ className = '' }: SpinnerProps) => {
   return (
-    <div className={`lds-ring ${className}`}>
+    <div data-testid="spinner" className={`lds-ring ${className}`}>
       <div></div>
       <div></div>
       <div></div>

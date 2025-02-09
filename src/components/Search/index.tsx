@@ -29,7 +29,7 @@ const SearchComponent = ({
   }, []);
 
   return (
-    <form className="searh" onSubmit={handleSubmit}>
+    <form data-testid="search-form" className="searh" onSubmit={handleSubmit}>
       <input
         className="search__input"
         type="text"
