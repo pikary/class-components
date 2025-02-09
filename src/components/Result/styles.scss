@@ -1,34 +1,45 @@
-.character-table {
+.characters{
+  max-width: 1920px;
   width: 100%;
-
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 16px;
+  margin: 20px auto;
   background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 
-  th,
-  td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  &__total{
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
-
-
-  th {
-    background-color: #007bff;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
+  &__table{
+    border-collapse: collapse;
+    width: 100%;
+    
+    font-size: 16px;
+  
+    th,
+    td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+  
+  
+    th {
+      background-color: #007bff;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
   }
 }
+

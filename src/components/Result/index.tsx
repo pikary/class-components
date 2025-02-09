@@ -1,17 +1,17 @@
-import { Component, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Character } from '../../api/types';
 import './styles.scss';
 
 interface CharacterTableProps {
   characters: Character[];
+  count: number;
 }
 
-class CharacterTable extends Component<CharacterTableProps> {
-  render(): ReactNode {
-    const { characters } = this.props;
-
-    return characters.length > 0 ? (
-      <table className="character-table">
+const CharacterTable = ({ characters, count }: CharacterTableProps) => {
+  const navigate = useNavigate();
+  return characters.length > 0 ? (
+    <div className="characters">
+      <table className="characters__table">
         <thead>
           <tr>
             <th>Num</th>
@@ -25,8 +25,14 @@ class CharacterTable extends Component<CharacterTableProps> {
         </thead>
         <tbody>
           {characters.map((character, ind) => (
-            <tr key={character.url} className="character-table__child">
-              <td>{++ind}</td>
+            <tr
+              key={character.url}
+              className="characters__table__child"
+              onClick={() =>
+                navigate(`details/${character.url.split('/').slice(-2, -1)[0]}`)
+              }
+            >
+              <td>{ind + 1}</td>
               <td>{character.name}</td>
               <td>{character.height}</td>
               <td>{character.mass}</td>
@@ -37,10 +43,11 @@ class CharacterTable extends Component<CharacterTableProps> {
           ))}
         </tbody>
       </table>
-    ) : (
-      <h3 style={{ textAlign: 'center' }}>No characters found</h3>
-    );
-  }
-}
+      <h4 className="characters__total">Total: {count}</h4>
+    </div>
+  ) : (
+    <h3 style={{ textAlign: 'center' }}>No characters found</h3>
+  );
+};
 
 export default CharacterTable;

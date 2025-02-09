@@ -5,6 +5,7 @@ import App from './App.tsx';
 import ErrorBoundary from './ErrorBoundary.tsx';
 
 const root = document.getElementById('root');
+
 if (root) {
   createRoot(root).render(
     <StrictMode>

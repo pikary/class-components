@@ -1,85 +1,34 @@
-import { Component } from 'react';
-import SearchComponent from './components/Search';
-import { getCharacters } from './api/baseApi';
-import { Character } from './api/types';
-import Spinner from './components/Spinner';
-import CharacterTable from './components/Result';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from 'react-router-dom';
+import NotFound from './components/notFound/NotFound';
+import SearchPage from './pages/SearchPage';
+import CharacterDetails from './components/CharacterDetails';
 
-interface AppState {
-  searchResult: Array<Character>;
-  isLoading: boolean;
-  test: string | null;
-}
-
-class App extends Component<unknown, AppState> {
-  constructor(props: unknown) {
-    super(props);
-    this.state = {
-      searchResult: [],
-      isLoading: false,
-      test: '',
-    };
-  }
-
-  toggleLoading = (value: boolean) => {
-    this.setState({ isLoading: value });
-  };
-
-  handleSearch = async (query: string) => {
-    try {
-      this.toggleLoading(true);
-      const result = await getCharacters('people', query);
-      if (result) {
-        this.setState({
-          searchResult: result.results || [],
-        });
-        //save query to localstorage
-        localStorage.setItem('search_query', query);
-      }
-    } catch (e) {
-      alert(e);
-      console.log(e);
-    } finally {
-      this.toggleLoading(false);
-    }
-  };
-
-  handleError = () => {
-    this.setState({ test: null });
-  };
-  shouldComponentUpdate(
-    _nextProps: unknown,
-    nextState: Readonly<AppState>
-  ): boolean {
-    if (nextState.test === null) {
-      throw new Error('TESTING ERROR BOUNDARY');
-    } else {
-      return true;
-    }
-  }
-
-  render() {
-    const { searchResult, isLoading } = this.state;
-
-    return (
-      <main>
-        <header>
-          <SearchComponent handleSearch={this.handleSearch} />
-        </header>
-        <div className="result-container">
-          {isLoading ? (
-            <Spinner className="result-container__spinner" />
-          ) : (
-            <CharacterTable characters={searchResult}></CharacterTable>
-          )}
-        </div>
-
-        <button className="error-btn" onClick={this.handleError}>
-          Show error
-        </button>
-      </main>
-    );
-  }
-}
+const App = () => {
+  const router = createBrowserRouter([
+    {
+      path: '/search',
+      element: <Navigate to="/search/1" replace />,
+    },
+    {
+      path: '/search/:page',
+      element: <SearchPage />,
+      children: [
+        {
+          path: 'details/:id',
+          element: <CharacterDetails></CharacterDetails>,
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <NotFound></NotFound>,
+    },
+  ]);
+  return <RouterProvider router={router}></RouterProvider>;
+};
 
 export default App;
