@@ -33,6 +33,7 @@ const SearchComponent = ({
       <input
         className="search__input"
         type="text"
+        data-testid="search-input"
         placeholder="type to search"
         onChange={onType}
         value={query}

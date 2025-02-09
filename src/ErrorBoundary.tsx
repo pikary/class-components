@@ -26,7 +26,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="error-fallback">
+        <div data-testid="error-fallback" className="error-fallback">
           <h2>Something went wrong! 🚨</h2>
           <p>{this.state.error?.message}</p>
         </div>

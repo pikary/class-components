@@ -7,7 +7,7 @@ describe('Search COmponent test', () => {
     render(
       <SearchComponent query="" setQuery={vi.fn()} handleSearch={vi.fn()} />
     );
-    expect(screen.getByPlaceholderText(/type to search/i)).toBeInTheDocument();
+    expect(screen.getByTestId('search-input')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
   });
 
@@ -17,7 +17,7 @@ describe('Search COmponent test', () => {
       <SearchComponent query="" setQuery={setQuery} handleSearch={vi.fn()} />
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/type to search/i), {
+    fireEvent.change(screen.getByTestId('search-input'), {
       target: { value: 'Luke Skywalker' },
     });
 
