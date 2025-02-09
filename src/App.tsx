@@ -1,4 +1,8 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from 'react-router-dom';
 import NotFound from './components/notFound/NotFound';
 import SearchPage from './pages/SearchPage';
 import CharacterDetails from './components/CharacterDetails';
@@ -7,6 +11,10 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: '/search',
+      element: <Navigate to="/search/1" replace />,
+    },
+    {
+      path: '/search/:page',
       element: <SearchPage />,
       children: [
         {

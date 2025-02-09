@@ -5,12 +5,14 @@ import { Character } from '../api/types';
 import SearchComponent from '../components/Search';
 import Spinner from '../components/Spinner';
 import { getCharacters } from '../api/baseApi';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet, useParams, useNavigate } from 'react-router-dom';
 import './styles.scss';
 
 const SearchPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const { page = '1' } = useParams();
+  const navigate = useNavigate();
+  const currentPage = Number(page);
+
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const { query, setQuery, handleQuerySave } = useQuery('search_query');
@@ -37,22 +39,18 @@ const SearchPage = () => {
     } finally {
       toggleLoading(false);
     }
-  }, [currentPage, query]);
+  }, [currentPage, query, handleQuerySave]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setSearchParams({ page: newPage.toString() });
+      navigate(`/search/${newPage}`);
     }
   };
 
   useEffect(() => {
     handleSearch();
-  }, [handleSearch]);
-  useEffect(() => {
-    if (!searchParams.get('page')) {
-      setSearchParams({ page: '1' }, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
+  }, []);
+
   return (
     <section className="search-page">
       <header className="search-page__header">
