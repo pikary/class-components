@@ -20,9 +20,6 @@ const SearchComponent = ({
     e.preventDefault();
     handleSearch(query);
   };
-  useEffect(() => {
-    console.log({ newQuery: query });
-  }, [query]);
 
   useEffect(() => {
     handleSearch(query);

@@ -4,43 +4,47 @@ import './styles.scss';
 
 interface CharacterTableProps {
   characters: Character[];
+  count: number;
 }
 
-const CharacterTable = ({ characters }: CharacterTableProps) => {
+const CharacterTable = ({ characters, count }: CharacterTableProps) => {
   const navigate = useNavigate();
   return characters.length > 0 ? (
-    <table className="character-table">
-      <thead>
-        <tr>
-          <th>Num</th>
-          <th>Name</th>
-          <th>Height (cm)</th>
-          <th>Mass (kg)</th>
-          <th>Gender</th>
-          <th>Birth Year</th>
-          <th>Films</th>
-        </tr>
-      </thead>
-      <tbody>
-        {characters.map((character, ind) => (
-          <tr
-            key={character.url}
-            className="character-table__child"
-            onClick={() =>
-              navigate(`details/${character.url.split('/').slice(-2, -1)[0]}`)
-            }
-          >
-            <td>{ind + 1}</td>
-            <td>{character.name}</td>
-            <td>{character.height}</td>
-            <td>{character.mass}</td>
-            <td>{character.gender}</td>
-            <td>{character.birth_year}</td>
-            <td>{character.films.length}</td>
+    <div className="characters">
+      <table className="characters__table">
+        <thead>
+          <tr>
+            <th>Num</th>
+            <th>Name</th>
+            <th>Height (cm)</th>
+            <th>Mass (kg)</th>
+            <th>Gender</th>
+            <th>Birth Year</th>
+            <th>Films</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {characters.map((character, ind) => (
+            <tr
+              key={character.url}
+              className="characters__table__child"
+              onClick={() =>
+                navigate(`details/${character.url.split('/').slice(-2, -1)[0]}`)
+              }
+            >
+              <td>{ind + 1}</td>
+              <td>{character.name}</td>
+              <td>{character.height}</td>
+              <td>{character.mass}</td>
+              <td>{character.gender}</td>
+              <td>{character.birth_year}</td>
+              <td>{character.films.length}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <h4 className="characters__total">Total: {count}</h4>
+    </div>
   ) : (
     <h3 style={{ textAlign: 'center' }}>No characters found</h3>
   );
