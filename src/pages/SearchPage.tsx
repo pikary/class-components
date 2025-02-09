@@ -64,7 +64,7 @@ const SearchPage = () => {
     handleSearch();
   }, []);
   return (
-    <section className="search-page">
+    <section data-testid="search_page" className="search-page">
       <header className="search-page__header">
         <SearchComponent
           query={query}

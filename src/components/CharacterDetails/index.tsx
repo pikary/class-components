@@ -29,7 +29,11 @@ const CharacterDetails = () => {
 
   return (
     <div className="character-details">
-      <button className="character-details__close-btn" onClick={handleClose}>
+      <button
+        data-testid="close-btn"
+        className="character-details__close-btn"
+        onClick={handleClose}
+      >
         X
       </button>
       <h2>{character?.name}</h2>

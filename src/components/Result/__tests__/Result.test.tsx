@@ -1,9 +1,20 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import CharacterTable from '../index';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import mockCharacters from '../__mocks__/result';
 import { MemoryRouter } from 'react-router-dom';
 
+const mockedUseNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const mod =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
+  return {
+    ...mod,
+    useNavigate: () => mockedUseNavigate,
+  };
+});
 describe('CharacterTable Component', () => {
   it('renders "No characters found" when the characters array is empty', () => {
     render(
@@ -43,6 +54,34 @@ describe('CharacterTable Component', () => {
       </MemoryRouter>
     );
     const rows = screen.getAllByRole('row');
-    expect(rows).toHaveLength(mockCharacters.length + 1); // +1 for the header row
+    expect(rows).toHaveLength(mockCharacters.length + 1);
+  });
+  it('navigates to character details when a row is clicked', () => {
+    render(
+      <MemoryRouter>
+        <CharacterTable characters={mockCharacters} count={2} />
+      </MemoryRouter>
+    );
+
+    const lukeRow = screen.getByText('Luke Skywalker').closest('tr');
+    const vaderRow = screen.getByText('Darth Vader').closest('tr');
+
+    if (lukeRow && vaderRow) {
+      fireEvent.click(lukeRow);
+      expect(mockedUseNavigate).toHaveBeenCalledWith('details/1');
+
+      fireEvent.click(vaderRow);
+      expect(mockedUseNavigate).toHaveBeenCalledWith('details/4');
+    }
+  });
+
+  it('renders the total count correctly', () => {
+    render(
+      <MemoryRouter>
+        <CharacterTable characters={mockCharacters} count={2} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Total: 2')).toBeInTheDocument();
   });
 });
