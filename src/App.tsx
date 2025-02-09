@@ -1,70 +1,18 @@
-import { useState, useEffect } from 'react';
-import SearchComponent from './components/Search';
-import { getCharacters } from './api/baseApi';
-import { Character } from './api/types';
-import Spinner from './components/Spinner';
-import CharacterTable from './components/Result';
-import useQuery from './hooks/useQuery';
-
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import NotFound from './components/notFound/NotFound';
+import SearchPage from './pages/SearchPage';
 const App = () => {
-  const { query, setQuery, handleQuerySave } = useQuery('search_query');
-  const [searchResult, setSearchResult] = useState<Array<Character>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [test, setTest] = useState<string | null>('');
-
-  const toggleLoading = (value: boolean) => {
-    setIsLoading(value);
-  };
-
-  const handleSearch = async () => {
-    try {
-      toggleLoading(true);
-      const result = await getCharacters('people', query);
-      if (result) {
-        setSearchResult(result.results || []);
-        console.log({ savingQuery: query });
-
-        handleQuerySave();
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      toggleLoading(false);
-    }
-  };
-
-  const handleError = () => {
-    setTest(null);
-  };
-
-  useEffect(() => {
-    if (test === null) {
-      throw new Error('TESTING ERROR BOUNDARY');
-    }
-  }, [test]);
-
-  return (
-    <main>
-      <header>
-        <SearchComponent
-          query={query}
-          setQuery={setQuery}
-          handleSearch={handleSearch}
-        />
-      </header>
-      <div className="result-container">
-        {isLoading ? (
-          <Spinner className="result-container__spinner" />
-        ) : (
-          <CharacterTable characters={searchResult} />
-        )}
-      </div>
-
-      <button className="error-btn" onClick={handleError}>
-        Show error
-      </button>
-    </main>
-  );
+  const router = createBrowserRouter([
+    {
+      path: '/search',
+      element: <SearchPage />,
+    },
+    {
+      path: '*',
+      element: <NotFound></NotFound>,
+    },
+  ]);
+  return <RouterProvider router={router}></RouterProvider>;
 };
 
 export default App;
