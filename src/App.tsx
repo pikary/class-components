@@ -4,8 +4,10 @@ import { getCharacters } from './api/baseApi';
 import { Character } from './api/types';
 import Spinner from './components/Spinner';
 import CharacterTable from './components/Result';
+import useQuery from './hooks/useQuery';
 
 const App = () => {
+  const { query, setQuery, handleQuerySave } = useQuery('search_query');
   const [searchResult, setSearchResult] = useState<Array<Character>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [test, setTest] = useState<string | null>('');
@@ -14,17 +16,18 @@ const App = () => {
     setIsLoading(value);
   };
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async () => {
     try {
       toggleLoading(true);
       const result = await getCharacters('people', query);
       if (result) {
         setSearchResult(result.results || []);
-        localStorage.setItem('search_query', query);
+        handleQuerySave();
       }
     } catch (e) {
-      alert(e);
       console.log(e);
+
+      alert(e);
     } finally {
       toggleLoading(false);
     }
@@ -43,7 +46,11 @@ const App = () => {
   return (
     <main>
       <header>
-        <SearchComponent handleSearch={handleSearch} />
+        <SearchComponent
+          query={query}
+          setQuery={setQuery}
+          handleSearch={handleSearch}
+        />
       </header>
       <div className="result-container">
         {isLoading ? (

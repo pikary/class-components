@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import './styles.scss';
 
 interface SearchComponentProps {
+  query: string;
+  setQuery: (val: string) => void;
   handleSearch: (query: string) => void;
 }
 
-const SearchComponent = ({ handleSearch }: SearchComponentProps) => {
-  const [query, setQuery] = useState<string>('');
-
+const SearchComponent = ({
+  handleSearch,
+  query,
+  setQuery,
+}: SearchComponentProps) => {
   const onType = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
@@ -18,9 +22,7 @@ const SearchComponent = ({ handleSearch }: SearchComponentProps) => {
   };
 
   useEffect(() => {
-    const savedQuery = localStorage.getItem('search_query') || '';
-    setQuery(savedQuery);
-    handleSearch(savedQuery);
+    handleSearch(query);
   }, []);
 
   return (
