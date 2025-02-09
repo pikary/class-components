@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Character } from '../../api/types';
 import './styles.scss';
 
@@ -6,6 +7,7 @@ interface CharacterTableProps {
 }
 
 const CharacterTable = ({ characters }: CharacterTableProps) => {
+  const navigate = useNavigate();
   return characters.length > 0 ? (
     <table className="character-table">
       <thead>
@@ -21,7 +23,13 @@ const CharacterTable = ({ characters }: CharacterTableProps) => {
       </thead>
       <tbody>
         {characters.map((character, ind) => (
-          <tr key={character.url} className="character-table__child">
+          <tr
+            key={character.url}
+            className="character-table__child"
+            onClick={() =>
+              navigate(`details/${character.url.split('/').slice(-2, -1)[0]}`)
+            }
+          >
             <td>{ind + 1}</td>
             <td>{character.name}</td>
             <td>{character.height}</td>

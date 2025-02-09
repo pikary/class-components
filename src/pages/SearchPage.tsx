@@ -5,7 +5,7 @@ import { Character } from '../api/types';
 import SearchComponent from '../components/Search';
 import Spinner from '../components/Spinner';
 import { getCharacters } from '../api/baseApi';
-import { useSearchParams } from 'react-router-dom';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import './styles.scss';
 
 const SearchPage = () => {
@@ -16,7 +16,6 @@ const SearchPage = () => {
   const { query, setQuery, handleQuerySave } = useQuery('search_query');
   const [searchResult, setSearchResult] = useState<Array<Character>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [test, setTest] = useState<string | null>('');
 
   const toggleLoading = (value: boolean) => {
     setIsLoading(value);
@@ -40,16 +39,6 @@ const SearchPage = () => {
     }
   }, [currentPage, query]);
 
-  const handleError = () => {
-    setTest(null);
-  };
-
-  useEffect(() => {
-    if (test === null) {
-      throw new Error('TESTING ERROR BOUNDARY');
-    }
-  }, [test]);
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setSearchParams({ page: newPage.toString() });
@@ -65,7 +54,7 @@ const SearchPage = () => {
     }
   }, [searchParams, setSearchParams]);
   return (
-    <>
+    <section className="search-page">
       <header className="search-page__header">
         <SearchComponent
           query={query}
@@ -93,18 +82,13 @@ const SearchPage = () => {
         {isLoading ? (
           <Spinner className="search-page__result-container__spinner" />
         ) : (
-          <CharacterTable characters={searchResult} />
+          <>
+            <CharacterTable characters={searchResult} />
+            <Outlet></Outlet>
+          </>
         )}
       </div>
-
-      <button
-        data-testid="error-btn"
-        className="search-page__error-btn"
-        onClick={handleError}
-      >
-        Show error
-      </button>
-    </>
+    </section>
   );
 };
 

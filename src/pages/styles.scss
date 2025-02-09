@@ -1,4 +1,6 @@
 .search-page {
+    max-width: 1920px;
+    margin: 0 auto;
     &__header {
         display: flex;
         align-items: center;
@@ -50,6 +52,7 @@
     }
 
     &__result-container {
+        display: flex;
         position: relative;
         width: 100%;
         height: fit-content;
