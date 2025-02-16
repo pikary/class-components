@@ -46,12 +46,16 @@ main {
   background-color: white;
   --text-color: black;
   --primary-bg:#007bff;
+  --hover-color:#007bff;
+
 }
 
 .dark {
   background-color: rgb(49, 48, 48);
   --text-color: white;
   --primary-bg:#64030bc7;
+  --hover-color:#64030bc7;
+
 }
 
 .error-fallback{

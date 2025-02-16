@@ -31,9 +31,9 @@
             transition: all 0.3s ease;
 
             &:hover {
-                background-color: #007bff;
+                background-color: var(--hover-color);
                 color: white;
-                border-color: #007bff;
+                border-color: var(--hover-color);
             }
 
             &:disabled {
