@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import './styles.scss';
 
 interface SearchComponentProps {
@@ -21,9 +20,9 @@ const SearchComponent = ({
     handleSearch(query);
   };
 
-  useEffect(() => {
-    handleSearch(query);
-  }, []);
+  // useEffect(() => {
+  //   handleSearch(query);
+  // }, []);
 
   return (
     <form data-testid="search-form" className="searh" onSubmit={handleSubmit}>

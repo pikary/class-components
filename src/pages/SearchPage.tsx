@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useQuery from '../hooks/useQuery';
 import CharacterTable from '../components/Result';
 import SearchComponent from '../components/Search';
 import Spinner from '../components/Spinner';
-import { getCharacters, GetCharactersResponse } from '../api/baseApi';
 import { Outlet, useParams, useNavigate } from 'react-router-dom';
+import { useGetCharactersQuery } from '../store/apiSlice';
 import './styles.scss';
 
 const SearchPage = () => {
@@ -12,66 +12,46 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const currentPage = Number(page);
   const { query, setQuery, handleQuerySave } = useQuery('search_query');
-  const [searchResult, setSearchResult] = useState<GetCharactersResponse>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // rtk qurya
+  const {
+    data: searchResult,
+    error,
+    isLoading,
+    refetch,
+  } = useGetCharactersQuery({
+    url: 'people',
+    query,
+    page: currentPage,
+  });
+
   const totalPages = useMemo(() => {
     if (!searchResult?.count) return 0;
-    const total = Math.ceil(searchResult?.count / 10);
-    return total;
+    return Math.ceil(searchResult.count / 10);
   }, [searchResult]);
-  const toggleLoading = (value: boolean) => {
-    setIsLoading(value);
-  };
-
-  const handleSearch = useCallback(async () => {
-    try {
-      toggleLoading(true);
-      navigate(`/search/1`, { replace: true });
-      const result = await getCharacters('people', query);
-      if (result) {
-        setSearchResult(result);
-        handleQuerySave();
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      toggleLoading(false);
-    }
-  }, [query, handleQuerySave, navigate]);
-
-  const handlePagination = useCallback(async () => {
-    try {
-      toggleLoading(true);
-      const result = await getCharacters('people', query, currentPage);
-      if (result) {
-        setSearchResult(result);
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      toggleLoading(false);
-    }
-  }, [currentPage]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       navigate(`/search/${newPage}`);
-      handlePagination();
     }
   };
 
   useEffect(() => {
-    handleSearch();
+    handleQuerySave();
   }, []);
+  useEffect(() => {
+    refetch();
+  }, [currentPage, refetch]);
   return (
     <section data-testid="search_page" className="search-page">
       <header className="search-page__header">
         <SearchComponent
           query={query}
           setQuery={setQuery}
-          handleSearch={handleSearch}
+          handleSearch={() => navigate('/search/1')}
         />
       </header>
+
       <div className="search-page__pagination-controls">
         <button
           data-testid="pagi-prev-btn"
@@ -93,13 +73,15 @@ const SearchPage = () => {
       <div className="search-page__result-container">
         {isLoading ? (
           <Spinner className="search-page__result-container__spinner" />
+        ) : error ? (
+          <p>Error fetching characters</p>
         ) : (
           <>
             <CharacterTable
               characters={searchResult?.results || []}
               count={searchResult?.count || 0}
             />
-            <Outlet></Outlet>
+            <Outlet />
           </>
         )}
       </div>
