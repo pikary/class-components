@@ -1,31 +1,23 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getCharacterByNumber } from '../../api/baseApi';
 import Spinner from '../Spinner';
 import './styles.scss';
-import { Character } from '../../api/types';
+import { useGetCharacterByNumberQuery } from '../../store/apiSlice';
 
 const CharacterDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCharacter = async () => {
-      setLoading(true);
-      const result = await getCharacterByNumber(`people/${id}`);
-      setCharacter(result);
-      setLoading(false);
-    };
-    fetchCharacter();
-  }, [id]);
+  const {
+    data: character,
+    error,
+    isLoading,
+  } = useGetCharacterByNumberQuery(`people/${id}`);
 
   const handleClose = () => {
     navigate('..', { replace: true });
   };
 
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />;
+  if (error) return <p>Error fetching character details.</p>;
 
   return (
     <div className="character-details">
