@@ -11,7 +11,7 @@ const SearchPage = () => {
   const { page = '1' } = useParams();
   const navigate = useNavigate();
   const currentPage = Number(page);
-  const { query, setQuery, handleQuerySave } = useQuery('search_query');
+  const { query, handleQuerySave } = useQuery('search_query');
 
   // rtk qurya
   const {
@@ -36,20 +36,18 @@ const SearchPage = () => {
     }
   };
 
-  useEffect(() => {
-    handleQuerySave();
-  }, []);
+  const handleSearch = (queryValue: string) => {
+    navigate(`/search/1`);
+    handleQuerySave(queryValue);
+    console.log(query);
+  };
   useEffect(() => {
     refetch();
-  }, [currentPage, refetch]);
+  }, [currentPage, query, refetch]);
   return (
     <section data-testid="search_page" className="search-page">
       <header className="search-page__header">
-        <SearchComponent
-          query={query}
-          setQuery={setQuery}
-          handleSearch={() => navigate('/search/1')}
-        />
+        <SearchComponent initialQuery={query} handleSearch={handleSearch} />
       </header>
 
       <div className="search-page__pagination-controls">

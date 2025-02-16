@@ -1,16 +1,16 @@
+import { useState } from 'react';
 import './styles.scss';
 
 interface SearchComponentProps {
-  query: string;
-  setQuery: (val: string) => void;
+  initialQuery: string;
   handleSearch: (query: string) => void;
 }
 
 const SearchComponent = ({
+  initialQuery,
   handleSearch,
-  query,
-  setQuery,
 }: SearchComponentProps) => {
+  const [query, setQuery] = useState(initialQuery);
   const onType = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
@@ -19,10 +19,6 @@ const SearchComponent = ({
     e.preventDefault();
     handleSearch(query);
   };
-
-  // useEffect(() => {
-  //   handleSearch(query);
-  // }, []);
 
   return (
     <form data-testid="search-form" className="searh" onSubmit={handleSubmit}>
