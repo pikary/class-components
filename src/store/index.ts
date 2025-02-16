@@ -1,9 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { apiSlice } from './apiSlice';
-
+import selectedCharactersReducer from './reducers/selectedCharacters/index';
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
+  selectedCharacters: selectedCharactersReducer,
 });
 
 const store = configureStore({

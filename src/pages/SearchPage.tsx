@@ -6,6 +6,7 @@ import Spinner from '../components/Spinner';
 import { Outlet, useParams, useNavigate } from 'react-router-dom';
 import { useGetCharactersQuery } from '../store/apiSlice';
 import './styles.scss';
+import Flyout from '../components/Flyout';
 
 const SearchPage = () => {
   const { page = '1' } = useParams();
@@ -83,6 +84,7 @@ const SearchPage = () => {
           </>
         )}
       </div>
+      <Flyout></Flyout>
     </section>
   );
 };

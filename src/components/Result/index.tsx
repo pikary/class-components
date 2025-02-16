@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Character } from '../../api/types';
+import { toggleItem } from '../../store/reducers/selectedCharacters';
 import './styles.scss';
+import { useAppDispatch, useTypedSelector } from '../../store';
 
 interface CharacterTableProps {
   characters: Character[];
@@ -9,11 +11,20 @@ interface CharacterTableProps {
 
 const CharacterTable = ({ characters, count }: CharacterTableProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const selectedItems = useTypedSelector(
+    (state) => state.selectedCharacters.selectedCharacters
+  );
+
+  const isSelected = (character: Character) =>
+    selectedItems.some((item: Character) => item.url === character.url);
+
   return characters.length > 0 ? (
     <div className="characters">
       <table className="characters__table">
         <thead>
           <tr>
+            <th>Select</th>
             <th>Num</th>
             <th>Name</th>
             <th>Height (cm)</th>
@@ -32,6 +43,14 @@ const CharacterTable = ({ characters, count }: CharacterTableProps) => {
                 navigate(`details/${character.url.split('/').slice(-2, -1)[0]}`)
               }
             >
+              <td>
+                <input
+                  type="checkbox"
+                  checked={isSelected(character)}
+                  onClick={(e) => e.stopPropagation()} // Prevent row click when selecting checkbox
+                  onChange={() => dispatch(toggleItem(character))}
+                />
+              </td>
               <td>{ind + 1}</td>
               <td>{character.name}</td>
               <td>{character.height}</td>
