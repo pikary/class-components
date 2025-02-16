@@ -7,6 +7,7 @@ import { Outlet, useParams, useNavigate } from 'react-router-dom';
 import { useGetCharactersQuery } from '../store/apiSlice';
 import './styles.scss';
 import Flyout from '../components/Flyout';
+import ThemeSelector from '../components/ThemeButton/ThemeButton';
 
 const SearchPage = () => {
   const { page = '1' } = useParams();
@@ -49,6 +50,7 @@ const SearchPage = () => {
     <section data-testid="search_page" className="search-page">
       <header className="search-page__header">
         <SearchComponent initialQuery={query} handleSearch={handleSearch} />
+        <ThemeSelector></ThemeSelector>
       </header>
 
       <div className="search-page__pagination-controls">

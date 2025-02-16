@@ -41,6 +41,15 @@ main {
   padding: 0 40px;
   border: 1px solid;
 }
+.light {
+  background-color: white;
+  color: black;
+}
+
+.dark {
+  background-color: black;
+  color: white;
+}
 
 .error-fallback{
   padding: 20px;
