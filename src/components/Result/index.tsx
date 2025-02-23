@@ -37,6 +37,7 @@ const CharacterTable = ({ characters, count }: CharacterTableProps) => {
         <tbody>
           {characters.map((character, ind) => (
             <tr
+              data-testid={`character_${character.name}`}
               key={character.url}
               className="characters__table__child"
               onClick={() =>

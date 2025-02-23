@@ -3,7 +3,11 @@ import CharacterTable from '../index';
 import { describe, it, expect, vi } from 'vitest';
 import mockCharacters from '../__mocks__/result';
 import { MemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { setupStore } from '../../../store'; // ✅ Import test store
+import { toggleItem } from '../../../store/reducers/selectedCharacters'; // ✅ Import Redux action
 
+// ✅ Mock useNavigate
 const mockedUseNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const mod =
@@ -15,26 +19,31 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockedUseNavigate,
   };
 });
+
 describe('CharacterTable Component', () => {
   it('renders "No characters found" when the characters array is empty', () => {
     render(
-      <MemoryRouter>
-        {' '}
-        <CharacterTable characters={[]} count={0} />{' '}
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter>
+          <CharacterTable characters={[]} count={0} />
+        </MemoryRouter>
+      </Provider>
     );
     expect(screen.getByText(/no characters found/i)).toBeInTheDocument();
   });
 
   it('renders the table with character data', () => {
     render(
-      <MemoryRouter>
-        <CharacterTable
-          characters={mockCharacters}
-          count={mockCharacters.length}
-        />
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter>
+          <CharacterTable
+            characters={mockCharacters}
+            count={mockCharacters.length}
+          />
+        </MemoryRouter>
+      </Provider>
     );
+
     expect(screen.getByText(/name/i)).toBeInTheDocument();
     expect(screen.getByText(/height \(cm\)/i)).toBeInTheDocument();
     expect(screen.getByText(/mass \(kg\)/i)).toBeInTheDocument();
@@ -46,21 +55,27 @@ describe('CharacterTable Component', () => {
 
   it('renders the correct number of table rows', () => {
     render(
-      <MemoryRouter>
-        <CharacterTable
-          characters={mockCharacters}
-          count={mockCharacters.length}
-        />
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter>
+          <CharacterTable
+            characters={mockCharacters}
+            count={mockCharacters.length}
+          />
+        </MemoryRouter>
+      </Provider>
     );
+
     const rows = screen.getAllByRole('row');
-    expect(rows).toHaveLength(mockCharacters.length + 1);
+    expect(rows).toHaveLength(mockCharacters.length + 1); // +1 for header row
   });
+
   it('navigates to character details when a row is clicked', () => {
     render(
-      <MemoryRouter>
-        <CharacterTable characters={mockCharacters} count={2} />
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter>
+          <CharacterTable characters={mockCharacters} count={2} />
+        </MemoryRouter>
+      </Provider>
     );
 
     const lukeRow = screen.getByText('Luke Skywalker').closest('tr');
@@ -77,11 +92,37 @@ describe('CharacterTable Component', () => {
 
   it('renders the total count correctly', () => {
     render(
-      <MemoryRouter>
-        <CharacterTable characters={mockCharacters} count={2} />
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter>
+          <CharacterTable characters={mockCharacters} count={2} />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('Total: 2')).toBeInTheDocument();
+  });
+
+  it('dispatches toggleItem when a checkbox is clicked', () => {
+    const store = setupStore();
+    store.dispatch = vi.fn(store.dispatch); // ✅ Spy on dispatch
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <CharacterTable characters={mockCharacters} count={2} />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    expect(checkboxes.length).toBeGreaterThan(0);
+
+    // ✅ Click the first checkbox
+    fireEvent.click(checkboxes[0]);
+    expect(store.dispatch).toHaveBeenCalledWith(toggleItem(mockCharacters[0]));
+
+    // ✅ Click the second checkbox
+    fireEvent.click(checkboxes[1]);
+    expect(store.dispatch).toHaveBeenCalledWith(toggleItem(mockCharacters[1]));
   });
 });

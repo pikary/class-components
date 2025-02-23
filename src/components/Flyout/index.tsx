@@ -3,17 +3,14 @@ import { unselectAll } from '../../store/reducers/selectedCharacters';
 import { saveAs } from 'file-saver';
 import './styles.scss';
 import { Character } from '../../api/types';
-
 const Flyout = () => {
   const dispatch = useAppDispatch();
   const selectedCharacters = useTypedSelector(
     (state) => state.selectedCharacters.selectedCharacters
   );
 
-  // If no items are selected, do not render Flyout
   if (selectedCharacters.length === 0) return null;
 
-  // ✅ Function to handle CSV download
   const handleDownload = () => {
     const csvContent =
       'Name,Height,Mass,Gender,Birth Year,Eye colr,URL\n' +

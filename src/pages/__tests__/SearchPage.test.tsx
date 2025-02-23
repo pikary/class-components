@@ -1,13 +1,37 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
 import SearchPage from '../SearchPage';
-import { getCharacters } from '../../api/baseApi';
+
 import mockCharacter from '../../components/CharacterDetails/__mocks__/details';
-vi.mock('../../api/baseApi', () => ({
-  getCharacters: vi.fn(),
-}));
+import { renderWithProviders } from '../../store/utils/test.utils';
+
+vi.mock('../../store/apiSlice', async () => {
+  const actual = await vi.importActual<typeof import('../../store/apiSlice')>(
+    '../../store/apiSlice'
+  );
+  return {
+    ...actual,
+    useGetCharactersQuery: vi.fn(() => ({
+      data: { results: mockCharacters, count: 20 },
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
+    })),
+  };
+});
+
+const mockedUseNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
+  return {
+    ...actual,
+    useNavigate: () => mockedUseNavigate,
+  };
+});
 
 const mockCharacters = Array.from({ length: 20 }, (_, index) => ({
   ...mockCharacter,
@@ -20,8 +44,8 @@ describe('SearchPage Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders search input and pagination controls', () => {
-    render(
+  it('renders search input, theme selector, and pagination controls', () => {
+    renderWithProviders(
       <MemoryRouter initialEntries={['/search/1']}>
         <Routes>
           <Route path="/search/:page" element={<SearchPage />} />
@@ -29,18 +53,22 @@ describe('SearchPage Component', () => {
       </MemoryRouter>
     );
 
+    expect(screen.getByTestId('search_page')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/type to search/i)).toBeInTheDocument();
     expect(screen.getByTestId('pagi-prev-btn')).toBeInTheDocument();
     expect(screen.getByTestId('pagi-next-btn')).toBeInTheDocument();
   });
 
   it('triggers search API call when searching', async () => {
-    (getCharacters as vi.Mock).mockResolvedValue({
-      results: mockCharacters,
-      count: 20,
+    const { useGetCharactersQuery } = await import('../../store/apiSlice');
+    (useGetCharactersQuery as Mock).mockReturnValue({
+      data: { results: mockCharacters, count: 20 },
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
     });
 
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/search/1']}>
         <Routes>
           <Route path="/search/:page" element={<SearchPage />} />
@@ -55,17 +83,27 @@ describe('SearchPage Component', () => {
     fireEvent.click(searchButton);
 
     await waitFor(() => {
-      expect(getCharacters).toHaveBeenCalledWith('people', 'Luke');
+      expect(useGetCharactersQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ query: 'Luke' })
+      );
     });
+    await waitFor(() => {
+      const character = screen.getByTestId('character_Character 1');
+      expect(character).toBeInTheDocument();
+    });
+    expect(mockedUseNavigate).toHaveBeenCalledWith('/search/1');
   });
 
   it('handles pagination correctly', async () => {
-    (getCharacters as vi.Mock).mockResolvedValue({
-      results: mockCharacters,
-      count: 20,
+    const { useGetCharactersQuery } = await import('../../store/apiSlice');
+    (useGetCharactersQuery as Mock).mockReturnValue({
+      data: { results: mockCharacters, count: 20 },
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
     });
 
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/search/1']}>
         <Routes>
           <Route path="/search/:page" element={<SearchPage />} />
@@ -75,19 +113,16 @@ describe('SearchPage Component', () => {
 
     const nextBtn = screen.getByTestId('pagi-next-btn');
     const prevBtn = screen.getByTestId('pagi-prev-btn');
+
     fireEvent.click(nextBtn);
-    await waitFor(() => {
-      expect(getCharacters).toHaveBeenCalled();
-    });
+    expect(mockedUseNavigate).toHaveBeenCalledWith('/search/2');
 
     fireEvent.click(prevBtn);
-    await waitFor(() => {
-      expect(getCharacters).toHaveBeenCalledTimes(2);
-    });
+    expect(mockedUseNavigate).toHaveBeenCalledWith('/search/2');
   });
 
   it('disables the Prev button on the first page', () => {
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/search/1']}>
         <Routes>
           <Route path="/search/:page" element={<SearchPage />} />
@@ -100,14 +135,15 @@ describe('SearchPage Component', () => {
   });
 
   it('shows loading spinner during API calls', async () => {
-    (getCharacters as vi.Mock).mockImplementation(
-      () =>
-        new Promise((resolve) =>
-          resolve({ results: mockCharacters, count: 20 })
-        )
-    );
+    const { useGetCharactersQuery } = await import('../../store/apiSlice');
+    (useGetCharactersQuery as Mock).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      error: null,
+      refetch: vi.fn(),
+    });
 
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/search/1']}>
         <Routes>
           <Route path="/search/:page" element={<SearchPage />} />
@@ -115,7 +151,27 @@ describe('SearchPage Component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByTestId('search_page')).toBeInTheDocument();
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
+  });
+
+  it('renders error message when API fails', async () => {
+    const { useGetCharactersQuery } = await import('../../store/apiSlice');
+    (useGetCharactersQuery as Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: 'API Error',
+      refetch: vi.fn(),
+    });
+    renderWithProviders(
+      <MemoryRouter initialEntries={['/search/1']}>
+        <Routes>
+          <Route path="/search/:page" element={<SearchPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(
+      await screen.findByText(/error fetching characters/i)
+    ).toBeInTheDocument();
   });
 });

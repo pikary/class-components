@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Character } from '../types';
 
-// ✅ Load selected items from localStorage (if available)
 const initialState = {
   selectedCharacters: JSON.parse(
     localStorage.getItem('selectedCharacters') || '[]'
