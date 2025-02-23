@@ -8,6 +8,7 @@ const ThemeSelector = () => {
     <div className="theme-selector">
       <label>
         <input
+          data-testid="light_radio"
           type="radio"
           value="light"
           checked={theme === 'light'}
@@ -17,6 +18,7 @@ const ThemeSelector = () => {
       </label>
       <label>
         <input
+          data-testid="dark_radio"
           type="radio"
           value="dark"
           checked={theme === 'dark'}

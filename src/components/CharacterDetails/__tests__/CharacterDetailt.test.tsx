@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, expect, vi, Mock } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { setupStore } from '../../../store';
@@ -38,7 +38,7 @@ describe('CharacterDetails Component', () => {
   });
 
   it('renders the spinner while loading', async () => {
-    (useGetCharacterByNumberQuery as vi.Mock).mockReturnValue({
+    (useGetCharacterByNumberQuery as Mock).mockReturnValue({
       data: undefined,
       isLoading: true,
       error: null,
@@ -61,7 +61,7 @@ describe('CharacterDetails Component', () => {
   });
 
   it('calls handleClose when the close button is clicked', async () => {
-    (useGetCharacterByNumberQuery as vi.Mock).mockReturnValue({
+    (useGetCharacterByNumberQuery as Mock).mockReturnValue({
       data: mockCharacter,
       isLoading: false,
       error: null,
@@ -92,7 +92,7 @@ describe('CharacterDetails Component', () => {
   });
 
   it('renders character details after successful fetch', async () => {
-    (useGetCharacterByNumberQuery as vi.Mock).mockReturnValue({
+    (useGetCharacterByNumberQuery as Mock).mockReturnValue({
       data: mockCharacter,
       isLoading: false,
       error: null,
