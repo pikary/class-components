@@ -14,6 +14,10 @@ const App = () => {
       element: <Navigate to="/search/1" replace />,
     },
     {
+      path: '/',
+      element: <Navigate to="/search" replace />,
+    },
+    {
       path: '/search/:page',
       element: <SearchPage />,
       children: [
